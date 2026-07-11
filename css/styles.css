@@ -1,0 +1,281 @@
+/* =========================================================================
+   ROWING PLANNER — design tokens
+   Palette drawn from the boathouse/regatta world:
+   navy water at dusk, teal current, buoy orange, oiled oak, moss, dusk purple
+   ========================================================================= */
+:root{
+  --navy-950:#0F2A3D;
+  --navy-900:#15374C;
+  --navy-800:#1D4760;
+  --paper:#EEF2F1;
+  --paper-raised:#FFFFFF;
+  --ink:#16232B;
+  --ink-soft:#4B5A63;
+  --line:#D7DFDD;
+
+  --teal:#1F6F78;        /* erg */
+  --slate:#2F5C99;       /* on-water */
+  --oak:#8A6D3B;         /* weights */
+  --moss:#4C7A3E;        /* flexibility */
+  --dusk:#5B4B8A;        /* running */
+  --harbor:#2E7F9E;      /* cycling */
+  --buoy:#D2461E;        /* accent / today / tests */
+  --buoy-100:#F7DED9;
+
+  /* soft block-band tints (background bands on the calendar) */
+  --band-base:#DCE6F0;
+  --band-build:#D8ECEA;
+  --band-race:#FBEAD4;
+  --band-taper:#E4EEDB;
+  --band-recovery:#E9E9E9;
+  --band-custom:#F3E3EE;
+
+  --font-display:"Oswald", "Arial Narrow", sans-serif;
+  --font-body:"Inter", system-ui, -apple-system, sans-serif;
+  --font-mono:"JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
+
+  --radius:10px;
+  --shadow-sm:0 1px 2px rgba(15,42,61,.08);
+  --shadow-md:0 4px 16px rgba(15,42,61,.12);
+}
+
+html,body{height:100%;}
+body{
+  font-family:var(--font-body);
+  background:var(--paper);
+  color:var(--ink);
+  font-size:15px;
+}
+
+h1,h2,h3,h4,.font-display{
+  font-family:var(--font-display);
+  letter-spacing:.02em;
+  text-transform:uppercase;
+  color:var(--navy-950);
+}
+
+.text-mono{font-family:var(--font-mono);}
+
+a{color:var(--teal);}
+
+/* =========================================================================
+   LAYOUT — left nav + main
+   ========================================================================= */
+.app-shell{display:flex;min-height:100vh;}
+
+.sidebar{
+  width:230px;
+  flex-shrink:0;
+  background:var(--navy-950);
+  color:#DDE7EA;
+  display:flex;
+  flex-direction:column;
+  position:sticky;
+  top:0;
+  height:100vh;
+}
+.sidebar .brand{
+  padding:1.1rem 1.1rem .6rem;
+  font-family:var(--font-display);
+  font-size:1.25rem;
+  letter-spacing:.04em;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  gap:.5rem;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.sidebar .brand .bi{color:var(--buoy);}
+.sidebar .brand small{
+  display:block;font-family:var(--font-body);text-transform:none;
+  font-size:.68rem;letter-spacing:.03em;color:#9FB3BC;font-weight:400;
+}
+
+.sidebar-nav{padding:.75rem .6rem;flex:0 0 auto;}
+.sidebar-nav .nav-link{
+  color:#C4D3D8;
+  border-radius:8px;
+  padding:.55rem .75rem;
+  margin-bottom:.15rem;
+  font-size:.92rem;
+  display:flex;align-items:center;gap:.65rem;
+  transition:background .15s ease,color .15s ease;
+}
+.sidebar-nav .nav-link .bi{font-size:1.05rem;width:1.1rem;text-align:center;}
+.sidebar-nav .nav-link:hover{background:rgba(255,255,255,.06);color:#fff;}
+.sidebar-nav .nav-link.active{background:var(--teal);color:#fff;}
+
+/* countdown — the signature element: a regatta start clock */
+.countdown-widget{
+  margin:.35rem .8rem 1rem;
+  background:linear-gradient(180deg,var(--navy-900),var(--navy-950));
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:var(--radius);
+  padding:.75rem .8rem .85rem;
+}
+.countdown-widget .cw-label{
+  font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;
+  color:#8FAAB4;margin-bottom:.4rem;display:flex;justify-content:space-between;
+}
+.countdown-widget .cw-race{color:#DDE7EA;}
+.countdown-grid{display:flex;gap:.4rem;}
+.countdown-grid .cw-unit{flex:1;text-align:center;}
+.countdown-grid .cw-num{
+  font-family:var(--font-mono);font-weight:700;font-size:1.15rem;
+  color:#fff;background:rgba(255,255,255,.06);
+  border-top:2px solid var(--buoy);
+  border-radius:4px;padding:.2rem 0;line-height:1.1;
+}
+.countdown-grid .cw-unit-label{
+  font-size:.58rem;letter-spacing:.08em;color:#8FAAB4;margin-top:.2rem;text-transform:uppercase;
+}
+
+.sidebar-foot{
+  margin-top:auto;padding:.75rem 1rem 1rem;
+  font-size:.72rem;color:#7E97A1;border-top:1px solid rgba(255,255,255,.08);
+}
+
+.main{flex:1;min-width:0;display:flex;flex-direction:column;}
+.topbar{
+  background:var(--paper-raised);
+  border-bottom:1px solid var(--line);
+  padding:.75rem 1.25rem;
+  display:flex;align-items:center;gap:1rem;flex-wrap:wrap;
+  position:sticky;top:0;z-index:5;
+}
+.view{padding:1.25rem;flex:1;}
+.view[hidden]{display:none;}
+
+/* =========================================================================
+   MONTH CALENDAR — days as a body of water, block bands as lane markers
+   ========================================================================= */
+.cal-weekday-row{
+  display:grid;grid-template-columns:repeat(7,1fr);
+  gap:6px;margin-bottom:6px;
+}
+.cal-weekday-row div{
+  text-align:center;font-family:var(--font-display);font-size:.75rem;
+  letter-spacing:.06em;color:var(--ink-soft);text-transform:uppercase;
+}
+.cal-grid{
+  display:grid;grid-template-columns:repeat(7,1fr);
+  grid-auto-rows:minmax(112px,auto);
+  gap:6px;
+}
+.cal-day{
+  position:relative;
+  background:var(--paper-raised);
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:.4rem .4rem .35rem;
+  display:flex;flex-direction:column;gap:.25rem;
+  cursor:pointer;
+  transition:box-shadow .12s ease, transform .12s ease;
+  overflow:hidden;
+}
+.cal-day:hover{box-shadow:var(--shadow-sm);transform:translateY(-1px);}
+.cal-day.is-outside{opacity:.42;}
+.cal-day.is-today{border-color:var(--buoy);box-shadow:0 0 0 1px var(--buoy);}
+
+/* the "lane line" — a dashed rule in the block's accent colour along the top,
+   tying the week's block identity to an actual lane-rope motif */
+.cal-day.has-block::before{
+  content:"";
+  position:absolute;top:0;left:0;right:0;height:5px;
+  background-image:repeating-linear-gradient(90deg,var(--block-color,var(--line)) 0 10px, transparent 10px 16px);
+}
+.cal-day.has-block{background:var(--block-tint,var(--paper-raised));}
+
+.cal-day-num{
+  font-family:var(--font-mono);font-weight:600;font-size:.8rem;color:var(--ink-soft);
+  align-self:flex-end;
+}
+.cal-day.is-today .cal-day-num{color:var(--buoy);}
+
+.cal-block-tag{
+  font-size:.58rem;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--navy-950);opacity:.65;font-family:var(--font-display);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+
+.cal-sessions{display:flex;flex-direction:column;gap:2px;overflow:hidden;}
+.sess-chip{
+  display:flex;align-items:center;gap:.3rem;
+  font-size:.68rem;padding:.12rem .35rem;border-radius:5px;
+  background:rgba(255,255,255,.65);
+  border-left:3px solid var(--chip-color,var(--teal));
+  color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.sess-chip .bi{color:var(--chip-color,var(--teal));font-size:.75rem;}
+.sess-chip.is-done{opacity:.55;text-decoration:line-through;}
+.sess-chip.is-skipped{opacity:.4;text-decoration:line-through;}
+.sess-chip.is-test{border-left-color:var(--buoy);background:var(--buoy-100);font-weight:600;}
+
+.cal-more{font-size:.65rem;color:var(--ink-soft);padding-left:.35rem;}
+
+/* type badges reused in lists/modals */
+.type-badge{
+  display:inline-flex;align-items:center;gap:.35rem;
+  padding:.2rem .55rem;border-radius:20px;font-size:.75rem;font-weight:600;
+  color:#fff;
+}
+.type-erg{background:var(--teal);}
+.type-water{background:var(--slate);}
+.type-weights{background:var(--oak);}
+.type-flexibility{background:var(--moss);}
+.type-running{background:var(--dusk);}
+.type-cycling{background:var(--harbor);}
+.type-test{background:var(--buoy);}
+
+/* block chips in the blocks list */
+.block-card{
+  border-left:6px solid var(--block-color,var(--teal));
+  background:var(--paper-raised);border:1px solid var(--line);
+  border-radius:var(--radius);padding:.85rem 1rem;
+  display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;
+  box-shadow:var(--shadow-sm);
+}
+.block-swatch{width:14px;height:14px;border-radius:3px;display:inline-block;background:var(--block-color,var(--teal));}
+
+.btn-primary{background:var(--teal);border-color:var(--teal);}
+.btn-primary:hover{background:#195860;border-color:#195860;}
+.btn-buoy{background:var(--buoy);border-color:var(--buoy);color:#fff;}
+.btn-buoy:hover{background:#B23A18;border-color:#B23A18;color:#fff;}
+
+.card-quiet{background:var(--paper-raised);border:1px solid var(--line);border-radius:var(--radius);}
+
+/* test results */
+.test-tile{
+  background:var(--paper-raised);border:1px solid var(--line);border-radius:var(--radius);
+  padding:1rem;text-align:center;
+}
+.test-tile .test-dist{font-family:var(--font-display);color:var(--navy-950);letter-spacing:.05em;}
+.test-tile .test-best{font-family:var(--font-mono);font-size:1.6rem;font-weight:700;color:var(--buoy);}
+.test-tile .test-sub{font-size:.72rem;color:var(--ink-soft);}
+
+.sparkline{width:100%;height:46px;display:block;}
+
+/* mobile */
+@media (max-width:900px){
+  .app-shell{flex-direction:column;}
+  .sidebar{
+    width:100%;height:auto;position:relative;flex-direction:row;
+    align-items:center;overflow-x:auto;
+  }
+  .sidebar .brand{border-bottom:none;border-right:1px solid rgba(255,255,255,.08);}
+  .sidebar-nav{display:flex;padding:.5rem;}
+  .sidebar-nav .nav-link{white-space:nowrap;}
+  .countdown-widget{display:none;}
+  .sidebar-foot{display:none;}
+  .cal-grid{grid-auto-rows:minmax(88px,auto);}
+  .cal-block-tag{display:none;}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .cal-day{transition:none;}
+}
+
+/* visible keyboard focus */
+a:focus-visible,button:focus-visible,.cal-day:focus-visible,.nav-link:focus-visible{
+  outline:2px solid var(--buoy);outline-offset:2px;
+}
