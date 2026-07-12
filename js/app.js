@@ -9,8 +9,16 @@ const App = {
     this.wireModals();
     this.wireSettings();
     Countdown.init();
-    await Countdown.loadFromSettings();
-    await this.showView("month");
+    try {
+      await Countdown.loadFromSettings();
+    } catch (err) {
+      console.error("Countdown: could not load saved event date", err);
+    }
+    try {
+      await this.showView("month");
+    } catch (err) {
+      console.error("App: failed to render initial view", err);
+    }
     this.registerServiceWorker();
   },
 

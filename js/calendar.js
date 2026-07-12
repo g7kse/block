@@ -20,8 +20,22 @@ const Calendar = {
     const startISO = fmtISO(start);
     const endISO = addDays(startISO, 41); // 6 weeks
 
-    await Blocks.loadAll();
-    await Sessions.loadRange(startISO, endISO);
+    // Blocks/sessions come from IndexedDB, which can be unavailable (private
+    // browsing, strict tracking-prevention browsers, storage disabled).
+    // The grid skeleton must always render even if that fails — decorate
+    // with data best-effort rather than let one failure blank the view.
+    let dbOk = true;
+    try {
+      await Blocks.loadAll();
+      await Sessions.loadRange(startISO, endISO);
+    } catch (err) {
+      console.error("Calendar: failed to load data from storage", err);
+      dbOk = false;
+      Blocks.cache = [];
+      Sessions.cache = [];
+      Sessions.byDate = {};
+    }
+    this.setStorageWarning(!dbOk);
 
     document.getElementById("calMonthLabel").textContent =
       new Date(this.viewYear, this.viewMonth, 1).toLocaleDateString(undefined, { month: "long", year: "numeric" });
@@ -71,6 +85,23 @@ const Calendar = {
       });
 
       grid.appendChild(cell);
+    }
+  },
+
+  setStorageWarning(show) {
+    let banner = document.getElementById("storageWarningBanner");
+    if (show && !banner) {
+      banner = document.createElement("div");
+      banner.id = "storageWarningBanner";
+      banner.className = "alert alert-warning py-2 px-3 mb-3 small";
+      banner.innerHTML = `<i class="bi bi-exclamation-triangle-fill me-1"></i>
+        Couldn't access on-device storage, so nothing you add right now will be saved.
+        This usually means private/incognito browsing or a browser setting is blocking storage —
+        try a normal browser window, or check your browser's site-data permissions for this page.`;
+      const view = document.querySelector('.view[data-view="month"] .view');
+      view.insertBefore(banner, view.firstChild);
+    } else if (!show && banner) {
+      banner.remove();
     }
   },
 

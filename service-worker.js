@@ -4,7 +4,7 @@
    it has been loaded once. No data ever passes through here — IndexedDB
    is untouched by the service worker.
    ========================================================================= */
-const CACHE_NAME = "rowing-planner-v1";
+const CACHE_NAME = "rowing-planner-v2";
 const SCOPE = self.registration.scope;
 
 const ASSETS = [
